@@ -93,6 +93,7 @@ def update():
  album=request.form.get('album')
  date=request.form.get('date')
 
+ insert(hash_table,id,{'song':song,'artist':artist,'date':date})
  tempfile = NamedTemporaryFile(mode='w', delete=False)
  fields = ['id', 'song', 'artist', 'album','release-date']
  with open(song_database, 'r') as csvfile, tempfile:
