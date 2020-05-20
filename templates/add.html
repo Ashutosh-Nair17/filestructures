@@ -1,0 +1,64 @@
+<html>
+<head>
+	<title> ADD RECORD </title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container" style="padding-top: 25px">
+		<div class="row justify-content-center">
+    		<div class="col-8">
+    			<h2>Add records</h2>
+      			<form action="{{url_for('add')}}" method="POST" style="padding-top: 25px">
+      			  <div class="col-auto">
+				  	<div class="form-group">
+				  	 	<div class="form-row align-items-center">
+				    		<label for="exampleInputEmail1">id</label>
+				    		<input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="id">
+				    		<small id="emailHelp" class="form-text text-muted">Make sure the id doesnt exists or the code may crash</small>
+				 	 	</div>
+				 	</div>
+				  <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">song</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1" name="name">
+				 	 </div>
+				 </div>
+				 <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">artist</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1"name="artist">
+				 	 </div>
+				 </div>
+				 <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">album</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1" name="album">
+				 	 </div>
+				 </div>
+				 <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">Release-date</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1" name="date">
+				 	 </div>
+
+				 </div>
+				 	<div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">Url for your Song </label>
+				    	<input type="url" class="form-control" id="exampleInputPassword1" name="url">
+				 	 </div>
+				 	</div>
+
+				  	<div>
+				  		<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+				</form>
+				<div align="center" style="padding-bottom: 30px">
+				  		<a href="{{url_for('display')}}"><button type="submit" class="btn btn-warning">click here to check id</button></a>
+				</div>
+    		</div>
+  		</div>
+	</div>
+</body>
+</html>	

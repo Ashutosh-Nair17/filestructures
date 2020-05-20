@@ -1,0 +1,57 @@
+<html>
+<head>
+	<title> UPDATE RECORD </title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container" style="padding-top: 25px">
+		<div class="row justify-content-center">
+    		<div class="col-8">
+    			<h2>Update records</h2>
+      			<form action="{{url_for('update')}}" method="POST" style="padding-top: 25px">
+      			  <div class="col-auto">
+				  	<div class="form-group">
+				  	 	<div class="form-row align-items-center">
+				    		<label for="exampleInputEmail1">id</label>
+				    		<input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="id">
+				    		<small id="emailHelp" class="form-text text-muted">Make sure the id exists or the code may crash</small>
+				 	 	</div>
+				 	</div>
+				  <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">song</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1" name="song">
+				 	 </div>
+				 </div>
+				 <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">artist</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1"name="artist">
+				 	 </div>
+				 </div>
+				 <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">album</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1" name="album">
+				 	 </div>
+				 </div>
+				 <div class="form-group">
+				  	  <div class="form-row align-items-center">
+				    	<label for="exampleInputPassword1">Release-date</label>
+				    	<input type="text" class="form-control" id="exampleInputPassword1" name="date">
+				 	 </div>
+
+				 </div>
+				  	<div>
+				  		<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+				</form>
+				<div align="center">
+				  		<a href="{{url_for('display')}}"><button type="submit" class="btn btn-warning">click here to check id</button></a>
+				</div>
+    		</div>
+  		</div>
+	</div>
+</body>
+</html>	
