@@ -1,5 +1,5 @@
 import csv
-import json
+import pickle
 from tempfile import NamedTemporaryFile
 import shutil
 from flask import Flask, session, render_template, request,redirect,url_for
@@ -7,7 +7,14 @@ import pandas as pd
 app = Flask(__name__)
 song_database = 'songs1.csv'
 
+
 hash_table = [[] for _ in range(15)]
+
+with open('hashtable.data', 'rb') as filehandle:
+# read the data as binary data stream
+ hash_table = pickle.load(filehandle)
+
+
 
 def insert(hash_table, key, value):
     hash_key = hash(key) % len(hash_table)
@@ -23,15 +30,16 @@ def insert(hash_table, key, value):
     else:
         bucket.append((key, value))
 
-def search1(hash_table, key):
-    hash_key = hash(key) % len(hash_table)    
-    bucket = hash_table[hash_key]
+def search1(hash_table1, key):
+    hash_key = hash(key) % len(hash_table1)    
+    bucket = hash_table1[hash_key]
     for i, kv in enumerate(bucket):
         k, v = kv
         if key == k:
             return v
+            print(v)
  
-def delete(hash_table, key):
+def delete1(hash_table, key):
     hash_key = hash(key) % len(hash_table)    
     key_exists = False
     bucket = hash_table[hash_key]
@@ -42,9 +50,6 @@ def delete(hash_table, key):
             break
     if key_exists:
         del bucket[i]
-        print ('Key {} deleted'.format(key))
-    else:
-        print ('Key {} not found'.format(key))
 
 
 
@@ -55,6 +60,10 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/hashtable',methods=["GET"])
+def hashing():
+    print(hash_table)
+    return render_template('hash.html',results=hash_table)
 
 @app.route("/adpr")
 def adpr():
@@ -86,8 +95,9 @@ def add():
     insert(hash_table,id,{'song':name,'artist':artist,'date':date})
 
     # update the hash_tabale permanently
-    with open('listfile.txt', 'w') as filehandle:
-      json.dump(hash_table, filehandle)
+    with open('hashtable.data', 'wb') as filehandle:
+    # store the data as binary data stream
+      pickle.dump(hash_table, filehandle)
 
     return redirect(url_for('adpr'))
 
@@ -111,8 +121,14 @@ def searchdisplay():
 
 @app.route("/s/search",methods=["POST"])
 def search():
+  
+ with open('hashtable.data', 'rb') as filehandle:
+    # read the data as binary data stream
+    hash_table = pickle.load(filehandle)
+ print(hash_table)
  id=request.form.get('id');
  ans=search1(hash_table,id)
+ print(ans)
  return render_template('searchresults.html',v=ans)
 
 
@@ -130,9 +146,9 @@ def update():
  insert(hash_table,id,{'song':song,'artist':artist,'date':date})
 
  # update the hash_table permanently
- with open('listfile.txt', 'w') as filehandle:
-   json.dump(basicList, filehandle)
-
+ with open('hashtable.data', 'wb') as filehandle:
+    # store the data as binary data stream
+    pickle.dump(hash_table, filehandle)
 
  # it will update the records file 'songs/songs1.csv'
  tempfile = NamedTemporaryFile(mode='w', delete=False)
@@ -181,15 +197,16 @@ def submitdelete():
 
   if student_found is True:
     # deletes the id from songs/songs1.csv
-     with open(song_database, "w", encoding="utf-8") as f:
+    with open(song_database, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerows(updated_data)
     # updates the hash_table
-      delete(hash_table,id)
+    delete1(hash_table,id)
     # update in hash_table file
-    with open('listfile.txt', 'w') as filehandle:
-      json.dump(basicList, filehandle)
+    with open('hashtable.data', 'wb') as filehandle:
+    # store the data as binary data stream
+       pickle.dump(hash_table, filehandle)
 
-     return redirect(url_for('display'))
+    return redirect(url_for('display'))
   else:
     return "Error 404:NOT FOUND"
