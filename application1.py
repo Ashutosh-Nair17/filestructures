@@ -1,4 +1,5 @@
 import csv
+import json
 from tempfile import NamedTemporaryFile
 import shutil
 from flask import Flask, session, render_template, request,redirect,url_for
@@ -30,15 +31,37 @@ def search1(hash_table, key):
         if key == k:
             return v
  
+def delete(hash_table, key):
+    hash_key = hash(key) % len(hash_table)    
+    key_exists = False
+    bucket = hash_table[hash_key]
+    for i, kv in enumerate(bucket):
+        k, v = kv 
+        if key == k:
+            key_exists = True 
+            break
+    if key_exists:
+        del bucket[i]
+        print ('Key {} deleted'.format(key))
+    else:
+        print ('Key {} not found'.format(key))
+
+
+
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
+
 @app.route("/adpr")
 def adpr():
     return render_template("add.html")
+
+
+
 
 @app.route("/adpr/add",methods=["POST"])
 def add():
@@ -58,7 +81,13 @@ def add():
     with open(song_database, "a", encoding="utf-8") as f:
                                         writer = csv.writer(f)
                                         writer.writerows([song_data])
+
+    # update the hash_table                                    
     insert(hash_table,id,{'song':name,'artist':artist,'date':date})
+
+    # update the hash_tabale permanently
+    with open('listfile.txt', 'w') as filehandle:
+      json.dump(hash_table, filehandle)
 
     return redirect(url_for('adpr'))
 
@@ -72,9 +101,13 @@ def display():
   result=list(data.values)
   return render_template('display.html',songs=result)
 
+
+
 @app.route("/s")
 def searchdisplay():
     return render_template('search.html')
+
+
 
 @app.route("/s/search",methods=["POST"])
 def search():
@@ -92,8 +125,16 @@ def update():
  artist=request.form.get('artist')
  album=request.form.get('album')
  date=request.form.get('date')
-
+ 
+ # updates the hash_tables key:value pair
  insert(hash_table,id,{'song':song,'artist':artist,'date':date})
+
+ # update the hash_table permanently
+ with open('listfile.txt', 'w') as filehandle:
+   json.dump(basicList, filehandle)
+
+
+ # it will update the records file 'songs/songs1.csv'
  tempfile = NamedTemporaryFile(mode='w', delete=False)
  fields = ['id', 'song', 'artist', 'album','release-date']
  with open(song_database, 'r') as csvfile, tempfile:
@@ -139,9 +180,16 @@ def submitdelete():
             student_found = True
 
   if student_found is True:
+    # deletes the id from songs/songs1.csv
      with open(song_database, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerows(updated_data)
+    # updates the hash_table
+      delete(hash_table,id)
+    # update in hash_table file
+    with open('listfile.txt', 'w') as filehandle:
+      json.dump(basicList, filehandle)
+
      return redirect(url_for('display'))
   else:
     return "Error 404:NOT FOUND"
