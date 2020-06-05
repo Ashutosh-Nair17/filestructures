@@ -9,14 +9,15 @@ song_database = 'songs1.csv'
 
 
 hash_table = [[] for _ in range(15)]
+print(hash_table)
 
 with open('hashtable.data', 'rb') as filehandle:
-# read the data as binary data stream
- hash_table = pickle.load(filehandle)
+    # read the data as binary data stream
+    hash_table= pickle.load(filehandle)
+print(hash_table)
 
-
-
-def insert(hash_table, key, value):
+def insert(key, value):
+    global hash_table
     hash_key = hash(key) % len(hash_table)
     key_exists = False
     bucket = hash_table[hash_key]    
@@ -30,16 +31,19 @@ def insert(hash_table, key, value):
     else:
         bucket.append((key, value))
 
-def search1(hash_table1, key):
-    hash_key = hash(key) % len(hash_table1)    
-    bucket = hash_table1[hash_key]
+def search1(key):
+    global hash_table
+    print("inside search")
+    print(hash_table)
+    hash_key = hash(key) % len(hash_table)    
+    bucket = hash_table[hash_key]
     for i, kv in enumerate(bucket):
         k, v = kv
         if key == k:
             return v
-            print(v)
  
-def delete1(hash_table, key):
+def delete1( key):
+    global hash_table
     hash_key = hash(key) % len(hash_table)    
     key_exists = False
     bucket = hash_table[hash_key]
@@ -62,7 +66,6 @@ def index():
 
 @app.route('/hashtable',methods=["GET"])
 def hashing():
-    print(hash_table)
     return render_template('hash.html',results=hash_table)
 
 @app.route("/adpr")
@@ -91,9 +94,10 @@ def add():
                                         writer = csv.writer(f)
                                         writer.writerows([song_data])
 
+    print(hash_table)
     # update the hash_table                                    
-    insert(hash_table,id,{'song':name,'artist':artist,'date':date})
-
+    insert(id,{'song':name,'artist':artist,'date':date})
+    print(hash_table)   
     # update the hash_tabale permanently
     with open('hashtable.data', 'wb') as filehandle:
     # store the data as binary data stream
@@ -121,13 +125,9 @@ def searchdisplay():
 
 @app.route("/s/search",methods=["POST"])
 def search():
-  
- with open('hashtable.data', 'rb') as filehandle:
-    # read the data as binary data stream
-    hash_table = pickle.load(filehandle)
  print(hash_table)
- id=request.form.get('id');
- ans=search1(hash_table,id)
+ id=request.form.get('id')
+ ans=search1(id)
  print(ans)
  return render_template('searchresults.html',v=ans)
 
@@ -143,7 +143,7 @@ def update():
  date=request.form.get('date')
  
  # updates the hash_tables key:value pair
- insert(hash_table,id,{'song':song,'artist':artist,'date':date})
+ insert(id,{'song':song,'artist':artist,'date':date})
 
  # update the hash_table permanently
  with open('hashtable.data', 'wb') as filehandle:
@@ -201,8 +201,9 @@ def submitdelete():
         writer = csv.writer(f)
         writer.writerows(updated_data)
     # updates the hash_table
-    delete1(hash_table,id)
+    delete1(id)
     # update in hash_table file
+    print(hash_table)
     with open('hashtable.data', 'wb') as filehandle:
     # store the data as binary data stream
        pickle.dump(hash_table, filehandle)
